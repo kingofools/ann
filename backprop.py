@@ -10,7 +10,7 @@ epsilon = 0.00002
 reg_lambda = 0.3   
 hidden_dim = 14
 hidden_layers = 2
-num_passes = 25000
+num_passes = 5000
 
 # Helper function to evaluate the total loss on the dataset
 def total_error(X, y):
@@ -71,7 +71,7 @@ def train_network(X, y, num_passes=20000):
 
 
     # updating the network num_pass times
-    for j in xrange(num_passes):
+    for j in range(num_passes):
         act_input={}
         act_val={}
 
@@ -80,7 +80,7 @@ def train_network(X, y, num_passes=20000):
         act_val[0] = np.tanh(act_input[0])
         
         #hidden activations
-        for i in xrange(hidden_layers-1) :
+        for i in range(hidden_layers-1) :
             act_input[i+1] = act_val[i].dot(W[i+1]) + b[i+1]
             act_val[i+1] = np.tanh(act_input[i+1])
         #output nodes.
@@ -128,7 +128,7 @@ def train_network(X, y, num_passes=20000):
             act_input = total_error(X, y)
             print("roundCount %i: Error: %f" % (j, act_input))
             if (act_input < 0.1) : 
-                print "Error less than minimum, exiting.. "
+                print("Error less than minimum, exiting.. ")
                 break
 
     return 
@@ -154,16 +154,16 @@ def test_network(validationData, validationLabel):
     probs = softmax_val / np.sum(softmax_val, axis=1, keepdims=True)
     predictions = np.argmax(probs, axis=1)
 
-    for p in xrange(len(predictions)):
+    for p in range(len(predictions)):
         if predictions[p] == validationLabel[p]:
             validCount += 1
-    print "correctly predicted:", str(validCount), " --> ", str(validCount * 100.0 / len(validationData)) + "%"
+    print("correctly predicted:", str(validCount), " --> ", str(validCount * 100.0 / len(validationData)) + "%")
 
     return validCount / len(validationData) 
 
 
 def gettraindata():
-    data = open("data-train_2.txt")
+    data = open("train_data.txt")
     features = []
     labels = []
     for line in data:
@@ -173,7 +173,7 @@ def gettraindata():
     return array(features), array(labels)
 
 def gettestdata():
-    data = open("data-train_2.txt")
+    data = open("train_data.txt")
     features = []
     labels = []
     for line in data:
@@ -199,8 +199,11 @@ def main():
 
 
     #building the model using the entire train dataset
+    print("Training the network...")
     train_network(train_data[:6000], training_label[:6000], num_passes)
     #test the constructed network with test_data
+    print("Training completed.")
+    print("Testing the network...")
     test_network(train_data[:6000], training_label[:6000])
     test_network(test_data[6000:], test_label[6000:])
 
